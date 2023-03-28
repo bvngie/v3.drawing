@@ -1,1 +1,1 @@
-Just a few things I'll be using to test the new drawing in synapse v3.
+My testing / development with the v3 drawing API.
