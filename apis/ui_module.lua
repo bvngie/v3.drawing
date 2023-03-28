@@ -5,7 +5,7 @@ local module = utility.utility
 
 -- check if the module has already been executed
 if not getgenv().module.utility then
-   getgenv().module.utility = module.utility
+   getgenv().module.utility = module
 end
 
 -- check if class is a valid drawing class
