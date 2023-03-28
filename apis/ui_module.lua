@@ -10,6 +10,9 @@ if not global.module.utility then
    global.module.utility = module
 end
 
+-- fixes gc
+module = global.module.utility
+
 -- check if class is a valid drawing class
 local check = function(class: string)
    local classes = {"Line", "Text", "Image", "Circle", "Square", "Triangle", "Quad"};
