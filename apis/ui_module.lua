@@ -4,6 +4,7 @@ local utility = {utility = {signature = "bungie", drawings = {}}};
 local module = utility.utility
 
 -- check if the module has already been executed
+if not getgenv().module then getgenv().module = {} end
 if not getgenv().module.utility then
    getgenv().module.utility = module
 end
