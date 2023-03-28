@@ -2,11 +2,12 @@ local utility = {utility = {signature = "bungie", drawings = {}}};
 
 -- just for visual preference
 local module = utility.utility
+local global = shared
 
 -- check if the module has already been executed
-if not getgenv().module then getgenv().module = {} end
-if not getgenv().module.utility then
-   getgenv().module.utility = module
+if not global.module then global.module = {} end
+if not global.module.utility then
+   global.module.utility = module
 end
 
 -- check if class is a valid drawing class
