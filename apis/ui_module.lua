@@ -35,7 +35,7 @@ function module.create(class: string, properties: table)
    if not class then return end;
    if not properties then return end;
 
-   local object
+   local object = nil;
    if check(class) then
       object = Drawing.new(class)
       for i,v in next, properties do
@@ -47,9 +47,18 @@ function module.create(class: string, properties: table)
    return object
 end
 
+local square = module._new("Square", {
+   Visible = true,
+   Filled = true,
+   Size = Vector2.new(100, 200),
+   Position = Vector2.new(70, 40),
+   Color = Color3.fromRGB(0, 0, 255)
+})
+print(square)
+
 -- ignore, just diff variations for peoples coding styles
 module._clear, module.Clear, module.wipe, module._wipe, module.Wipe, module.reset, module._reset, module.Reset = module.clear, module.clear, module.clear, module.clear, module.clear, module.clear, module.clear, module.clear;
-module.Create, module._create, module._Create, module.add, module.Add, module._add, module._Add, module.new, module.New, module._new, module._New, module.instance, module._instance, module._Instance, module.Instance, module.draw, module.Draw, module._draw, module._Draw = module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create;
+module._create, module.Ceate, module._Create, module.add, module.Add, module._add, module._Add, module.new, module.New, module._new, module._New, module.instance, module._instance, module._Instance, module.Instance, module.draw, module.Draw, module._draw, module._Draw = module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create;
 module._drawing, module._drawings, module.Drawing, module.Drawings = module.drawings, module.drawings, module.drawings, module.drawings;
 module._signature, module.sig, module.Signature, module._siggy, module.sig, module.siggy, module.Sig, module.Siggy = module.signature, module.signature, module.signature, module.signature, module.signature, module.signature, module.signature, module.signature;
 utility.Utility, utility._utility, utility.Util, utility._util, utility._utils, utility.utils, utility.Utils = utility.utility, utility.utility, utility.utility, utility.utility, utility.utility, utility.utility, utility.utility;
