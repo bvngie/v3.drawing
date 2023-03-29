@@ -47,15 +47,6 @@ function module.create(class: string, properties: table)
    return object
 end
 
-local square = module._new("Square", {
-   Visible = true,
-   Filled = true,
-   Size = Vector2.new(100, 200),
-   Position = Vector2.new(70, 40),
-   Color = Color3.fromRGB(0, 0, 255)
-})
-print(square)
-
 -- ignore, just diff variations for peoples coding styles
 module._clear, module.Clear, module.wipe, module._wipe, module.Wipe, module.reset, module._reset, module.Reset = module.clear, module.clear, module.clear, module.clear, module.clear, module.clear, module.clear, module.clear;
 module._create, module.Ceate, module._Create, module.add, module.Add, module._add, module._Add, module.new, module.New, module._new, module._New, module.instance, module._instance, module._Instance, module.Instance, module.draw, module.Draw, module._draw, module._Draw = module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create, module.create;
