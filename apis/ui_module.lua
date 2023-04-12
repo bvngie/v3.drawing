@@ -1,10 +1,10 @@
-local utility = {utility = {signature = "bungie"; drawings = {}; signal = {}}};
+local module = {utility = {signature = "bungie"; drawings = {}; signal = {}}};
 
 do
    -- check if the module has already been executed
    if not shared.module then shared.module = {} end;
    if not shared.module.utility then
-      shared.module.utility = utility.utility;
+      shared.module.utility = module.utility;
    end;
 
    -- fixes gc
@@ -197,4 +197,4 @@ do
    end;
 end;
 
-return utility
+return module
