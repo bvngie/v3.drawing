@@ -1,5 +1,13 @@
-local module = {utility = {signature = "bungie"; drawings = {}; signal = {}}};
+local module = {utility = {signature = nil; drawings = {}; elements = {}; signals = {}}};
+module.utility.signature = "bungie"
+if module.utility.signature ~= "bungie" then return end
 
+-- // Services
+local services = {
+   uis = game:GetService("UserInputService")
+}
+
+-- // Shared set (fixes v3)
 do
    -- check if the module has already been executed
    if not shared.module then shared.module = {} end;
@@ -68,87 +76,47 @@ do
    end;
 end;
 
--- // Vozoid's modified Signal handler
+-- // Signal system
 do
-   -- vars
-   local signal = module.signal;
-   signal.__index = signal;
-   signal.ClassName = "signal";
+   local signals = module.signals
+   
+   -- over drawing signal
+   signals.is_over = function(object: any)
+      local mouse = module.mouse()
+      local pos = {offset = object.Position, absolute = object.Position + object.Size}
+      if mouse.X >= pos.offset.X and mouse.Y >= pos.offset.Y and mouse.X <= pos.absolute.X and mouse.Y <= pos.absolute.Y then
+         return true
+      end
+      return false
+   end
 
-   -- signal check
-   function signal.check(_signal)
-      return type(signal) == "table" and getmetatable(_signal) == signal
-   end;
-   -- new signal
-   function signal.new()
-      local self = setmetatable({}, signal)
-      self._bindableEvent = Instance.new("BindableEvent")
-      self._argMap = {}
-      self._source = ""
-      self._bindableEvent.Event:Connect(function(key)
-         self._argMap[key] = nil
-         if (not self._bindableEvent) and (not next(self._argMap)) then
-            self._argMap = nil
-         end;
+   -- click function
+   signals.click = function(object: any, call)
+      services.uis.InputBegan:Connect(function(input)
+         if input.UserInputType == Enum.UserInputType.MouseButton1 and signals.is_over(object) == true then
+            call()
+         end
       end)
-      return self
-   end;
-   -- fire signal
-   function signal:fire(...)
-      if not self._bindableEvent then
-         warn(("Signal is already destroyed. %s"):format(self._source))
-         return;
-      end;
-      local args = table.pack(...)
-      local key = game:GetService("HttpService"):GenerateGUID(false)
-      self._argMap[key] = args
-      self._bindableEvent:Fire(key)
-   end;
-   -- connect signal (mousebutton1down:Connect(etc))
-   function signal:connect(handler)
-      if not type(handler) == "function" then
-         error(("connect(%s)"):format(typeof(handler)), 2)
-      end;
-      return self._bindableEvent.Event:Connect(function(key)
-         local args = self._argMap[key]
-         if args then
-            handler(table.unpack(args, 1, args.n))
-         else
-            error("missing arg data, probably due to reentrance.")
-         end;
-      end)
-   end;
-   -- wait for signal
-   function signal:wait()
-      local key = self._bindableEvent.Event:Wait()
-      local args = self._argMap[key]
-      if args then
-         return table.unpack(args, 1, args.n)
-      else
-         error("Missing arg data, probably due to reentrance.")
-         return nil
-      end;
-   end;
-   -- destroy signal
-   function signal:destroy()
-      if self._bindableEvent then
-         self._bindableEvent:destroy()
-         self._bindableEvent = nil
-      end;
-      setmetatable(self, nil)
-   end;
+   end
 end;
 
 -- // Instances
 do
    -- check if class is a valid drawing class
    local check = function(class: string)
-      local classes = {"Line", "Text", "Image", "Circle", "Square", "Triangle", "Quad"};
-      for i,v in next, classes do
-         if class == v then
-            return true
+      local drawings = {"Line", "Text", "Image", "Circle", "Square", "Triangle", "Quad"};
+      local elements = {"Frame", "TextLabel", "TextBox", "TextButton", "ImageButton", "ImageLabel", "UIListLayout", "UICorner"}
+      for i,v in next, drawings do
+         if drawings[i] == v then
+            return "drawing"
          end;
       end;
+      for i,v in next, elements do
+         if elements[i] == v then
+            return "element"
+         end
+      end
+      return nil
    end;
 
    -- clear all drawings in the drawing table
@@ -160,27 +128,57 @@ do
 
    -- create drawing class
    function module.create(class: string, properties: table)
+      print(check(class))
       if not class then return end;
-      if not properties then return end;
 
       local object;
       local handler = {}
       if check(class) then
          object = Drawing.new(class)
-         for i,v in next, properties do
-            object[i] = v;
-         end;
+
+         if properties ~= nil or typeof(properties) == "table" and #properties ~= 0 then
+            for i,v in next, properties do
+               object[i] = v;
+            end;
+         end
 
          table.insert(module.drawings, object);
       end;
+
+      local function new(mode: string)
+         local area;
+         if mode == "drawing" or mode == "Drawing" then
+            object = Drawing.new(class)
+            area = module.drawings
+         elseif mode == "element" or mode == "Element" then
+            object = Instance.new(class)
+            area = module.elements
+         end
+
+         if properties ~= nil or typeof(properties) == "table" and #properties ~= 0 then
+            for i,v in next, properties do
+               object[i] = v;
+            end;
+         end
+
+         table.insert(area, object);
+      end
+
+      new(check(class))
 
       -- functions
       function handler:get()
          return object
       end;
-      function handler:color(color: Color3)
-         if not color then object.Color = object.Color return end;
-         object.Color = color
+      function handler:color(color: Color3, property: string)
+         if check(class) == "drawing" then
+            if not color then object.Color = object.Color return end;
+            object.Color = color
+         elseif check(class) == "element" then
+            if not object[property] then return end
+            if not color then object[property] = object[property] return end;
+            object[property] = color
+         end
       end;
       function handler:size(xs: number, xo: number, ys: number, yo: number)
          local x = xs * object.Size.X + xo
