@@ -1,5 +1,4 @@
-local module = {utility = {signature = nil; drawings = {}; elements = {}; signals = {}}};
-if module.utility.signature ~= "bungie" then return end
+local module = {utility = {signature = "bungie"; drawings = {}; elements = {}; signals = {}}};
 
 -- // Services
 local services = {
