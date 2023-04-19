@@ -14,8 +14,10 @@ do
    end;
 
    -- fixes gc
-   module = shared.module.utility;
+   module = shared.module;
 end;
+
+local module = module.utility;
 
 -- // Random misc
 do
