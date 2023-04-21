@@ -133,18 +133,6 @@ do
 
       local object;
       local handler = {}
-      if check(class) then
-         object = Drawing.new(class)
-
-         if properties ~= nil or typeof(properties) == "table" and #properties ~= 0 then
-            for i,v in next, properties do
-               object[i] = v;
-            end;
-         end
-
-         table.insert(module.drawings, object);
-      end;
-
       local function new(mode: string)
          local area;
          if mode == "drawing" or mode == "Drawing" then
